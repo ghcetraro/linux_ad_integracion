@@ -1,0 +1,45 @@
+Configure PowerBroker Identity Services Open (PBISO) Authentication
+VMware Horizon 7 7.7  
+                 Última actualización 15/11/2018    0 
+
+
+
+ Añadir a MyLibrary 
+< Hacer nueva pregunta 
+The PowerBroker Identity Services Open (PBISO) authentication method is one of the supported solutions for performing an offline domain join. 
+Use the following steps to join a Linux desktop to Active Directory using PBISO. 
+Procedure
+Download PBISO 8.5.6 or later from https://www.beyondtrust.com/products/powerbroker-identity-services-open/. 
+Install PBISO on your Linux VM. 
+  
+sudo ./pbis-open-8.5.6.2029.linux.x86_64.deb.sh
+Install Horizon 7 Agent for Linux. 
+Use PBISO to join the Linux desktop to the AD domain. 
+In the following example, lxdc.vdi is the domain name and administrator is the domain user name. 
+  
+sudo domainjoin-cli join lxdc.vdi administrator
+Set up the default configuration for domain users. 
+  
+sudo /opt/pbis/bin/config UserDomainPrefix lxdc 
+sudo /opt/pbis/bin/config AssumeDefaultDomain true 
+sudo /opt/pbis/bin/config LoginShellTemplate /bin/bash 
+sudo /opt/pbis/bin/config HomeDirTemplate %H/%U
+Edit the /etc/pamd.d/common-session file. 
+Locate the line that says session sufficient pam_lsass.so. 
+Replace that line with session [success=ok default=ignore] pam_lsass.so. 
+Note:
+This step must be repeated after you reinstall or update the Horizon Agent for Linux. 
+Edit the /usr/share/lightdm/lightdm.conf.d/50-unity-greeter.conf file and append the following lines. 
+Note:
+If you are using Ubuntu 14.04, the lightdm configuration file is named 60-lightdm-gtk-greeter.conf. 
+  
+allow-guest=false
+greeter-show-manual-login=true
+Reboot your system and log in. 
+What to do next
+Note:
+If the /opt/pbis/bin/config AssumeDefaultDomain option is set to false, you must update the SSOUserFormat=<username>@<domain> setting in the /etc/vmware/viewagent-custom.conf file. 
+When using the Horizon instant-clone floating desktop pool feature, to avoid losing the DNS Server setting when the new network adapter is added to the cloned VM, modify the resolv.conf file for your Linux system. Use the following example, for an Ubuntu 16.04 system, as a guide for adding the necessary lines in the /etc/resolvconf/resolv.conf.d/head file. 
+  
+nameserver 10.10.10.10
+search mydomain.org
