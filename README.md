@@ -1,6 +1,6 @@
 # Linux Active Directory Integracion
 
-## Conect Linux Centos to Active Directory 2012.
+## Connect Linux Centos to Active Directory 2012.
 
 Versions
 
