@@ -1,1 +1,3 @@
-# linux_ad_integracion
+# Linux Active Directory Integracion
+
+##Conect Linux Centos to Active Directory 2012.
